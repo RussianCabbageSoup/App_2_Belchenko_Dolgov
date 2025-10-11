@@ -1,10 +1,10 @@
 import kotlin.math.abs
 import kotlin.math.log
 import kotlin.math.round
+import kotlin.random.Random
 
 fun main() {
 
-    println("Hello World!")
     while (true) {
 
         println("Choose the application (1-5)")
@@ -23,7 +23,7 @@ fun main() {
 
             3 -> {
 
-                println(task3())
+                //println(task3())
 
             }
 
@@ -51,46 +51,54 @@ fun main() {
 }
 
 fun task1(){
- // Запрос размеров массива
+
     print("Введите количество строк: ")
-    val rows = readLine()!!.toInt()
+    val rows = readln().toInt()
     print("Введите количество столбцов: ")
-    val cols = readLine()!!.toInt()
+    val cols = readln().toInt()
 
-    // Создание и заполнение массива
-    val array = Array(rows) { IntArray(cols) }
+    var arr: Array<Array<Int>> =  Array(rows) { Array(cols) { 0 } }
     println("Введите $rows×$cols трехзначных чисел:")
+    val count = mutableSetOf<Char>()
 
     for (i in 0 until rows) {
         for (j in 0 until cols) {
-            array[i][j] = readLine()!!.toInt().also {
-                require(it in 100..999) { "Число должно быть трехзначным" }
-            }
+            var input: Int
+            do {
+                print("Элемент [$i][$j]: ")
+                input = readln().toInt()
+                if (input !in 100..999) {
+                    println("Число должно быть трехзначным.")
+                }
+            } while (input !in 100..999)
+            arr[i][j] = input
         }
     }
 
-    // Подсчет уникальных цифр
-    val uniqueDigits = mutableSetOf<Char>()
     for (i in 0 until rows) {
         for (j in 0 until cols) {
-            uniqueDigits.addAll(array[i][j].toString().toList())
+            arr[i][j].toString().forEach { count.add(it) }
         }
     }
 
-    // Вывод результатов
-    println("\nМассив:")
+    println("\nВведенный массив:")
     for (i in 0 until rows) {
         for (j in 0 until cols) {
-            print("%6d".format(array[i][j]))
+            print("%4d".format(arr[i][j]))
         }
         println()
     }
 
-    println("\nВ массиве использовано ${uniqueDigits.size} различных цифр")
+    println("\nИспользовано различных цифр: ${count.size}")
 }
 
 fun task2() {
- val matrix = arrayOf(
+
+    val matrix = Array(5) {
+        IntArray(5) { Random.nextInt(1, 11) }
+    }
+
+    val matrix2 = arrayOf(
         intArrayOf(5, 9, 6, 7, 2),
         intArrayOf(9, 8, 4, 5, 3),
         intArrayOf(6, 4, 3, 8, 7),
@@ -98,9 +106,37 @@ fun task2() {
         intArrayOf(2, 3, 7, 8, 1)
     )
 
+    println("Нажмите 1 чтобы получить симметричный массив\nНажмите 2 чтобы получить массив случайных чисел")
+    val choose = readln().toInt()
+    if (choose == 1) {
+        println("\nСимметричный Массив:")
+        for (i in 0..4) {
+            for (j in 0..4) {
+                print("%4d".format(matrix2[i][j]))
+            }
+            println()
+        }
+
+        println("Матрица симметрична: ${Symmetric(matrix2)}")
+
+    } else if (choose == 2){
+        println("\nСлучайный массив:")
+        for (i in 0..4) {
+            for (j in 0..4) {
+                print("%4d".format(matrix[i][j]))
+            }
+            println()
+        }
+
+        println("Матрица симметрична: ${Symmetric(matrix)}")
+    } else {
+        println("Введите 1 или 2")
+    }
+}
+fun Symmetric(matrix: Array<IntArray>) : Boolean{
+
     var isSymmetric = true
 
-    // Проверяем элементы выше главной диагонали
     for (i in 0..4) {
         for (j in (i + 1)..4) {
             if (matrix[i][j] != matrix[j][i]) {
@@ -111,10 +147,9 @@ fun task2() {
         if (!isSymmetric) break
     }
 
-    println("Матрица симметрична: $isSymmetric")
+    return isSymmetric
 }
-
-fun task3() {
+/*fun task3() {
     // Заданный алфавит с номерами
     val alphabet = listOf(
         'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ы', 'Ъ', 'Э', 'Ю', 'Я'
@@ -196,16 +231,16 @@ fun task3() {
     }
 }
 }
-
+*/
 fun task4() {
-println("Введите элементы первого массива через пробел:")
-    val firstArray = readLine()?.split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
+    println("Введите элементы первого массива через пробел:")
+    val firstArray = readln().toString().split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
 
     println("Введите элементы второго массива через пробел:")
-    val secondArray = readLine()?.split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
+    val secondArray = readln().toString().split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
 
     val result = findIntersection(firstArray, secondArray)
-    
+
     println("Результат пересечения: ${result.joinToString()}")
 }
 
@@ -222,19 +257,18 @@ fun findIntersection(first: List<Int>, second: List<Int>): List<Int> {
 
     return result
 }
-}
 
 fun task5() {
     println("Введите слова через пробел:")
-    val input = readLine()
-    
+    val input = readln().toString()
+
     if (input.isNullOrEmpty()) {
-        println("Ошибка: ввод не может быть пустым")
+        println("Ввод не может быть пустым")
         return
     }
 
     val words = input.split(" ").filter { it.isNotBlank() }
-    
+
     val groupedWords = words.groupBy { word ->
         word.toCharArray().sorted().joinToString("")
     }
@@ -243,5 +277,4 @@ fun task5() {
     groupedWords.values.forEach { group ->
         println(group.joinToString(", ", prefix = "\"", postfix = "\""))
     }
-}
 }
