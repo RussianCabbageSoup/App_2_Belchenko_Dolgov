@@ -23,7 +23,7 @@ fun main() {
 
             3 -> {
 
-                //println(task3())
+                println(task3())
 
             }
 
@@ -149,89 +149,48 @@ fun Symmetric(matrix: Array<IntArray>) : Boolean{
 
     return isSymmetric
 }
-/*fun task3() {
-    // Заданный алфавит с номерами
-    val alphabet = listOf(
-        'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ы', 'Ъ', 'Э', 'Ю', 'Я'
-    )
-    val numbers = listOf(
-        21, 13, 4, 20, 22, 1, 25, 12, 24, 14, 2, 28, 9, 23, 3, 29, 6, 16, 15, 11, 26, 5, 30, 27, 8, 18, 10, 33, 31, 32, 19, 7, 17
-    )
+fun task3() {
+    val alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ"
 
-    // Создаем отображения: символ -> номер и номер -> символ
-    val charToNumber = alphabet.zip(numbers).toMap()
-    val numberToChar = numbers.zip(alphabet).toMap()
+    fun getIndex(char: Char): Int = alphabet.indexOf(char)
+    fun getChar(index: Int): Char = alphabet[index % 33]
 
-    // Функция для получения номера символа
-    fun getCharNumber(char: Char): Int {
-        return charToNumber[char] ?: throw IllegalArgumentException("Неизвестный символ: $char")
-    }
-
-    // Функция для получения символа по номеру
-    fun getCharFromNumber(number: Int): Char {
-        return numberToChar[number] ?: throw IllegalArgumentException("Неизвестный номер: $number")
-    }
-
-    // Функция модуля с учетом закольцованности алфавита
-    fun mod33(n: Int): Int {
-        val result = n % 33
-        return if (result <= 0) result + 33 else result
-    }
-
-    // Функция шифрования
-    fun encrypt(text: String, key: String): String {
-        val upperText = text.uppercase()
-        val upperKey = key.uppercase()
-        val result = StringBuilder()
-        for (i in upperText.indices) {
-            val textChar = upperText[i]
-            val keyChar = upperKey[i % upperKey.length]
-            val textNumber = getCharNumber(textChar)
-            val keyNumber = getCharNumber(keyChar)
-            val encryptedNumber = mod33(textNumber + keyNumber)
-            result.append(getCharFromNumber(encryptedNumber))
-        }
-        return result.toString()
-    }
-
-    // Функция дешифровки
-    fun decrypt(text: String, key: String): String {
-        val upperText = text.uppercase()
-        val upperKey = key.uppercase()
-        val result = StringBuilder()
-        for (i in upperText.indices) {
-            val textChar = upperText[i]
-            val keyChar = upperKey[i % upperKey.length]
-            val textNumber = getCharNumber(textChar)
-            val keyNumber = getCharNumber(keyChar)
-            val decryptedNumber = mod33(textNumber - keyNumber)
-            result.append(getCharFromNumber(decryptedNumber))
-        }
-        return result.toString()
-    }
-
-    // Взаимодействие с пользователем
     println("Выберите действие: (1) Зашифровать, (2) Расшифровать")
-    when (readLine()?.toIntOrNull()) {
+    when (readln().toInt()) {
         1 -> {
             println("Введите текст для шифрования:")
-            val text = readLine() ?: ""
+            val text = readln().uppercase()
             println("Введите ключевое слово:")
-            val key = readLine() ?: ""
-            println("Зашифрованный текст: ${encrypt(text, key)}")
+            val key = readln().uppercase()
+
+            val result = StringBuilder()
+            for (i in text.indices) {
+                val textIndex = getIndex(text[i])
+                val keyIndex = getIndex(key[i % key.length])
+                val encryptedIndex = (textIndex + keyIndex) % 33
+                result.append(getChar(encryptedIndex))
+            }
+            println("Зашифрованный текст: $result")
         }
         2 -> {
             println("Введите текст для дешифровки:")
-            val text = readLine() ?: ""
+            val text = readln().uppercase()
             println("Введите ключевое слово:")
-            val key = readLine() ?: ""
-            println("Расшифрованный текст: ${decrypt(text, key)}")
+            val key = readln().uppercase()
+
+            val result = StringBuilder()
+            for (i in text.indices) {
+                val textIndex = getIndex(text[i])
+                val keyIndex = getIndex(key[i % key.length])
+                val decryptedIndex = (textIndex - keyIndex + 33) % 33
+                result.append(getChar(decryptedIndex))
+            }
+            println("Расшифрованный текст: $result")
         }
         else -> println("Некорректный выбор")
     }
 }
-}
-*/
+
 fun task4() {
     println("Введите элементы первого массива через пробел:")
     val firstArray = readln().toString().split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
