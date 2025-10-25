@@ -186,7 +186,7 @@ fun process(encrypt: Boolean, alphabet: Map<Char, Int>) {
             result.append(alphabet.entries.find { it.value == newCode }?.key)
             keyIndex++
         } else {
-            result.append(char)
+            println("Такого символа нет")
         }
     }
 
