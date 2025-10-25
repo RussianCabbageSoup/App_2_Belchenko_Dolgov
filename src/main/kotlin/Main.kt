@@ -150,54 +150,54 @@ fun Symmetric(matrix: Array<IntArray>) : Boolean{
     return isSymmetric
 }
 fun task3() {
-    val alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ"
+    val alphabet = mapOf(
+        'А' to 21, 'Б' to 13, 'В' to 4, 'Г' to 20, 'Д' to 22, 'Е' to 1, 'Ё' to 25, 'Ж' to 12,
+        'З' to 24, 'И' to 14, 'Й' to 2, 'К' to 28, 'Л' to 9, 'М' to 23, 'Н' to 3, 'О' to 29,
+        'П' to 6, 'Р' to 16, 'С' to 15, 'Т' to 11, 'У' to 26, 'Ф' to 5, 'Х' to 30, 'Ц' to 27,
+        'Ч' to 8, 'Ш' to 18, 'Щ' to 10, 'Ь' to 33, 'Ы' to 31, 'Ъ' to 32, 'Э' to 19, 'Ю' to 7, 'Я' to 17
+    )
 
-    fun getIndex(char: Char): Int = alphabet.indexOf(char)
-    fun getChar(index: Int): Char = alphabet[index % 33]
-
-    println("Выберите действие: (1) Зашифровать, (2) Расшифровать")
+    print("Операция (1-шифровка, 2-дешифровка): ")
     when (readln().toInt()) {
-        1 -> {
-            println("Введите текст для шифрования:")
-            val text = readln().uppercase()
-            println("Введите ключевое слово:")
-            val key = readln().uppercase()
-
-            val result = StringBuilder()
-            for (i in text.indices) {
-                val textIndex = getIndex(text[i])
-                val keyIndex = getIndex(key[i % key.length])
-                val encryptedIndex = (textIndex + keyIndex) % 33
-                result.append(getChar(encryptedIndex))
-            }
-            println("Зашифрованный текст: $result")
-        }
-        2 -> {
-            println("Введите текст для дешифровки:")
-            val text = readln().uppercase()
-            println("Введите ключевое слово:")
-            val key = readln().uppercase()
-
-            val result = StringBuilder()
-            for (i in text.indices) {
-                val textIndex = getIndex(text[i])
-                val keyIndex = getIndex(key[i % key.length])
-                val decryptedIndex = (textIndex - keyIndex + 33) % 33
-                result.append(getChar(decryptedIndex))
-            }
-            println("Расшифрованный текст: $result")
-        }
-        else -> println("Некорректный выбор")
+        1 -> process(true, alphabet)
+        2 -> process(false, alphabet)
+        else -> println("Ошибка")
     }
+}
+
+fun process(encrypt: Boolean, alphabet: Map<Char, Int>) {
+    print("Ключ: ")
+    val key = readln().uppercase()
+    print("Текст: ")
+    val text = readln().uppercase()
+
+    val result = StringBuilder()
+    var keyIndex = 0
+
+    for (char in text) {
+        if (char in alphabet) {
+            val charCode = alphabet[char]!!
+            val keyCode = alphabet[key[keyIndex % key.length]]!!
+            val newCode = if (encrypt) {
+                (charCode + keyCode - 1) % 33 + 1
+            } else {
+                (charCode - keyCode + 33 - 1) % 33 + 1
+            }
+            result.append(alphabet.entries.find { it.value == newCode }?.key)
+            keyIndex++
+        } else {
+            result.append(char)
+        }
+    }
+
+    println("Результат: $result")
 }
 
 fun task4() {
     println("Введите элементы первого массива через пробел:")
-    val firstArray = readln().toString().split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
-
+    val firstArray = readln().split(" ").mapNotNull { it.toIntOrNull() }
     println("Введите элементы второго массива через пробел:")
-    val secondArray = readln().toString().split(" ")?.map { it.toIntOrNull() }?.filterNotNull() ?: emptyList()
-
+    val secondArray = readln().split(" ").mapNotNull { it.toIntOrNull() }
     val result = findIntersection(firstArray, secondArray)
 
     println("Результат пересечения: ${result.joinToString()}")
